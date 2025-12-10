@@ -1,0 +1,15 @@
+C:\Users\ramee\Downloads\RevHubP2Project\RevHub\microservices\chat-service\src\main\java\com\revhub\chatservice\ChatServiceApplication.java
+C:\Users\ramee\Downloads\RevHubP2Project\RevHub\microservices\chat-service\src\main\java\com\revhub\chatservice\config\CorsConfig.java
+C:\Users\ramee\Downloads\RevHubP2Project\RevHub\microservices\chat-service\src\main\java\com\revhub\chatservice\config\WebConfig.java
+C:\Users\ramee\Downloads\RevHubP2Project\RevHub\microservices\chat-service\src\main\java\com\revhub\chatservice\config\WebSocketConfig.java
+C:\Users\ramee\Downloads\RevHubP2Project\RevHub\microservices\chat-service\src\main\java\com\revhub\chatservice\controller\ChatController.java
+C:\Users\ramee\Downloads\RevHubP2Project\RevHub\microservices\chat-service\src\main\java\com\revhub\chatservice\controller\HealthController.java
+C:\Users\ramee\Downloads\RevHubP2Project\RevHub\microservices\chat-service\src\main\java\com\revhub\chatservice\dto\ChatMessageRequest.java
+C:\Users\ramee\Downloads\RevHubP2Project\RevHub\microservices\chat-service\src\main\java\com\revhub\chatservice\dto\ChatMessageResponse.java
+C:\Users\ramee\Downloads\RevHubP2Project\RevHub\microservices\chat-service\src\main\java\com\revhub\chatservice\dto\ConversationResponse.java
+C:\Users\ramee\Downloads\RevHubP2Project\RevHub\microservices\chat-service\src\main\java\com\revhub\chatservice\model\ChatMessage.java
+C:\Users\ramee\Downloads\RevHubP2Project\RevHub\microservices\chat-service\src\main\java\com\revhub\chatservice\model\Conversation.java
+C:\Users\ramee\Downloads\RevHubP2Project\RevHub\microservices\chat-service\src\main\java\com\revhub\chatservice\repository\ChatMessageRepository.java
+C:\Users\ramee\Downloads\RevHubP2Project\RevHub\microservices\chat-service\src\main\java\com\revhub\chatservice\repository\ConversationRepository.java
+C:\Users\ramee\Downloads\RevHubP2Project\RevHub\microservices\chat-service\src\main\java\com\revhub\chatservice\service\ChatService.java
+C:\Users\ramee\Downloads\RevHubP2Project\RevHub\microservices\chat-service\src\main\java\com\revhub\chatservice\websocket\ChatWebSocketController.java
