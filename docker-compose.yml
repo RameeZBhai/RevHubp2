@@ -1,0 +1,189 @@
+version: '3.8'
+
+services:
+  # Consul Service Discovery
+  consul:
+    image: hashicorp/consul:latest
+    container_name: consul
+    ports:
+      - "8500:8500"
+      - "8600:8600/udp"
+    command: agent -server -ui -bootstrap-expect=1 -client=0.0.0.0
+    networks:
+      - revhub-network
+
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: revhub-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: userdb
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./init-databases.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - revhub-network
+
+  # MongoDB Database
+  mongodb:
+    image: mongo:latest
+    container_name: revhub-mongodb
+    ports:
+      - "27017:27017"
+    networks:
+      - revhub-network
+
+  # User Service
+  user-service:
+    image: rameezshaik/revhub-user-service:latest
+    container_name: user-service
+    ports:
+      - "8080:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/userdb
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_CONSUL_PORT: 8500
+      SPRING_CLOUD_CONSUL_DISCOVERY_ENABLED: "true"
+      SPRING_CLOUD_CONSUL_DISCOVERY_REGISTER: "true"
+      SPRING_CLOUD_CONSUL_DISCOVERY_HOSTNAME: user-service
+    depends_on:
+      - mysql
+      - consul
+    networks:
+      - revhub-network
+
+  # Chat Service
+  chat-service:
+    image: rameezshaik/revhub-chat-service:latest
+    container_name: chat-service
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/chatdb
+      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_CONSUL_PORT: 8500
+      SPRING_CLOUD_CONSUL_DISCOVERY_ENABLED: "true"
+      SPRING_CLOUD_CONSUL_DISCOVERY_REGISTER: "true"
+      SPRING_CLOUD_CONSUL_DISCOVERY_HOSTNAME: chat-service
+    depends_on:
+      - mongodb
+      - consul
+    networks:
+      - revhub-network
+
+  # Feed Service
+  feed-service:
+    image: rameezshaik/revhub-feed-service:latest
+    container_name: feed-service
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/feeddb
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_CONSUL_PORT: 8500
+      SPRING_CLOUD_CONSUL_DISCOVERY_ENABLED: "true"
+      SPRING_CLOUD_CONSUL_DISCOVERY_REGISTER: "true"
+      SPRING_CLOUD_CONSUL_DISCOVERY_HOSTNAME: feed-service
+    depends_on:
+      - mysql
+      - consul
+    networks:
+      - revhub-network
+
+  # Follow Service
+  follow-service:
+    image: rameezshaik/revhub-follow-service:latest
+    container_name: follow-service
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/followdb
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_CONSUL_PORT: 8500
+      SPRING_CLOUD_CONSUL_DISCOVERY_ENABLED: "true"
+      SPRING_CLOUD_CONSUL_DISCOVERY_REGISTER: "true"
+      SPRING_CLOUD_CONSUL_DISCOVERY_HOSTNAME: follow-service
+    depends_on:
+      - mysql
+      - consul
+    networks:
+      - revhub-network
+
+  # Notification Service
+  notification-service:
+    image: rameezshaik/revhub-notification-service:latest
+    container_name: notification-service
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/notificationdb
+      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_CONSUL_PORT: 8500
+      SPRING_CLOUD_CONSUL_DISCOVERY_ENABLED: "true"
+      SPRING_CLOUD_CONSUL_DISCOVERY_REGISTER: "true"
+      SPRING_CLOUD_CONSUL_DISCOVERY_HOSTNAME: notification-service
+    depends_on:
+      - mongodb
+      - consul
+    networks:
+      - revhub-network
+
+  # Post Service
+  post-service:
+    image: rameezshaik/revhub-post-service:latest
+    container_name: post-service
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/postdb
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_CONSUL_PORT: 8500
+      SPRING_CLOUD_CONSUL_DISCOVERY_ENABLED: "true"
+      SPRING_CLOUD_CONSUL_DISCOVERY_REGISTER: "true"
+      SPRING_CLOUD_CONSUL_DISCOVERY_HOSTNAME: post-service
+    depends_on:
+      - mysql
+      - consul
+    networks:
+      - revhub-network
+
+  # Search Service
+  search-service:
+    image: rameezshaik/revhub-search-service:latest
+    container_name: search-service
+    ports:
+      - "8086:8086"
+    environment:
+      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_CONSUL_PORT: 8500
+      SPRING_CLOUD_CONSUL_DISCOVERY_ENABLED: "true"
+      SPRING_CLOUD_CONSUL_DISCOVERY_REGISTER: "true"
+      SPRING_CLOUD_CONSUL_DISCOVERY_HOSTNAME: search-service
+    depends_on:
+      - consul
+    networks:
+      - revhub-network
+
+  # Shell App (Frontend)
+  shell-app:
+    image: rameezshaik/revhub-shell-app:latest
+    container_name: shell-app
+    ports:
+      - "4200:80"
+    networks:
+      - revhub-network
+
+networks:
+  revhub-network:
+    driver: bridge
